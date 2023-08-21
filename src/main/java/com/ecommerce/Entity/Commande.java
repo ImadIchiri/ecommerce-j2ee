@@ -3,6 +3,7 @@ package com.ecommerce.Entity;
 public class Commande {
 	private int id;
 	private int dateCommande;
+	private User user;
 	
 	public Commande() {}
 	
@@ -27,6 +28,13 @@ public class Commande {
 	}
 	public void setDateCommande(int dateCommande) {
 		this.dateCommande = dateCommande;
+	}
+
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

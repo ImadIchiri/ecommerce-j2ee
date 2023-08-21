@@ -5,4 +5,6 @@ public class LignePanier {
 	private Produit produit;
 	private Panier panier;
 	private int quantite;
+	
+	
 }
