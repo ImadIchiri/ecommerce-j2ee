@@ -98,16 +98,18 @@ public class UserDAO {
 
 	         while (resultSet.next()) {
 	        	 id = resultSet.getInt("id");
-	        	 quantityDispo = resultSet.getInt("quantityDispo");
-	        	 nom = resultSet.getString("nom");
+	        	 quantityDispo = resultSet.getInt("quantiteDispo");
+	        	 nom = resultSet.getString("titre");
 	        	 prix = resultSet.getDouble("prix");
 	        	 int idCategorie = resultSet.getInt("idCategorie");
 	        	 
 	        	 Optional<Categorie> optionalCategorie = getCategorieById(idCategorie);
 	        	 
+	        	 System.out.println("Beffore: " + id);
 	        	 if (optionalCategorie.isPresent()) {
 		        	categorie = optionalCategorie.get();
 		        	allProducts.add(new Produit(id, categorie, nom, quantityDispo, prix));
+		        	System.out.println("Added: " + id);
 	        	 }
 	         }
 	     } catch (SQLException e) {
