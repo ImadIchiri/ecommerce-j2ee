@@ -8,9 +8,12 @@ import java.util.*;
 
 import com.ecommerce.DAO.DataBaseConnection;
 import com.ecommerce.Entity.Categorie;
+import com.ecommerce.Entity.Commande;
+import com.ecommerce.Entity.LigneCommande;
 import com.ecommerce.Entity.LignePanier;
 import com.ecommerce.Entity.Panier;
 import com.ecommerce.Entity.Produit;
+import com.ecommerce.Entity.User;
 import com.ecommerce.userDAO.UserDAO;
 
 
@@ -61,25 +64,96 @@ public class ClientDAO {
 	public void addProductToPanier(int idProduit, int quantite) {
 		Panier panier = new Panier(); // 
 		Produit produit = ClientDAO.getProductsById(idProduit);
-		LignePanier lPanier = new LignePanier(produit, panier, quantite);
-		Panier.insertIntoListLignePanier(lPanier); //  static?
-		Panier.getListLignePanier().add(lPanier); //  static?
-
-		
+		if (produit.getQuantityDispo() >= quantite) {
+			LignePanier lPanier = new LignePanier(produit, panier, quantite);
+			Panier.insertIntoListLignePanier(lPanier); //  static?
+			//Panier.getListLignePanier().add(lPanier); //  static?
+		}	
 	}
+	
+	
 	
 	//public affichePanier() {} we already have getListLignePanier() 
 	
-	public void passerCommande(int idPanier) {
+	public void addCommande(int idProduit, int quantite, String dateCommande, User user) {
+		
 		// i think we should do the same thing we have been did with the previous method
-		
-		
-		
+		Commande commande = new Commande(dateCommande, user);
+		Produit produit = ClientDAO.getProductsById(idProduit);
+		LigneCommande lCommande = new LigneCommande(commande, produit, quantite);
+		 try (Connection connection = DataBaseConnection.connectToDB();){
+		        
+
+		        PreparedStatement insertInToCmd = connection.prepareStatement("insert into Commande (date, user) values (?, ? ) ;");
+		        User u = commande.getUser();
+
+		        insertInToCmd.setString(1,commande.getDateCommande());
+		        insertInToCmd.setInt(2,u.getId());
+		        insertInToCmd.executeUpdate();
+		        
+		        PreparedStatement insertInToLigneCmd = connection.prepareStatement("insert into LigneCommande (idCommande, idProduit, quantite) values (?, ?, ?) ;");
+
+		        insertInToLigneCmd.setInt(1, commande.getId());
+		        insertInToLigneCmd.setInt(2, idProduit);
+		        insertInToLigneCmd.setInt(3, quantite);
+		        insertInToLigneCmd.executeUpdate();
+		            
+		        } catch(SQLException e) {
+		        	e.printStackTrace();
+		        }
 	}
 	
-	public void addLigneCommande(int idPanier) {
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+public void addCommande2(Panier panier, String dateCommande, User user) {
 		
+		// i think we should do the same thing we have been did with the previous method
+		Commande commande = new Commande(dateCommande, user);
+		try (Connection connection = DataBaseConnection.connectToDB();){
+	        
+
+	        PreparedStatement insertInToCmd = connection.prepareStatement("insert into Commande (date, user) values (?, ? ) ;");
+	        User u = commande.getUser();
+
+	        insertInToCmd.setString(1,commande.getDateCommande());
+	        insertInToCmd.setInt(2,u.getId());
+	        insertInToCmd.executeUpdate();
 		
+	        
+		List<LignePanier> listLignePanier = panier.getListLignePanier();
+		//Produit produit = ClientDAO.getProductsById(idProduit);
+		
+		for(LignePanier lignePanier: listLignePanier) {
+			LigneCommande lCommande = new LigneCommande(commande, lignePanier.getProduit(), lignePanier.getQuantite());
+			 
+	        
+	        PreparedStatement insertInToLigneCmd = connection.prepareStatement("insert into LigneCommande (idCommande, idProduit, quantite) values (?, ?, ?) ;");
+
+	        insertInToLigneCmd.setInt(1, commande.getId());
+	        insertInToLigneCmd.setInt(2, lignePanier.getProduit().getId());
+	        insertInToLigneCmd.setInt(3, lignePanier.getProduit().getQuantityDispo());
+	        insertInToLigneCmd.executeUpdate();
+			
+		}
+		          
+		        } catch(SQLException e) {
+		        	e.printStackTrace();
+		        }
+	}
+	
+	
+	
+	
 		
 		
 	}
@@ -88,4 +162,3 @@ public class ClientDAO {
 	
 	
 
-}
