@@ -1,5 +1,11 @@
 package com.ecommerce.clientDAO;
 
+<<<<<<< HEAD
+public class ClientDAO {
+	
+	
+}
+=======
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -162,3 +168,4 @@ public void addCommande2(Panier panier, String dateCommande, User user) {
 	
 	
 
+>>>>>>> e749550ef922b06f8ca31552de56dd6d95e93283
