@@ -15,6 +15,7 @@ import com.ecommerce.userDAO.UserDAO;
 
 public class AdminDAO {
     
+	// Test
 
     
     // Méthode pour ajouter une nouvelle catégorie
