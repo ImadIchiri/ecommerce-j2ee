@@ -39,20 +39,20 @@ public class UserDAO {
 	public static Optional<Categorie> getCategorieByName(String categorieName) {
 		Categorie categorie = null;
 		
-	     try (Connection connection = DataBaseConnection.connectToDB();) {
-	    	 PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Categorie WHERE categorie = ?");
-	    	 preparedStatement.setString(1, categorieName);
+	    try (Connection connection = DataBaseConnection.connectToDB();) {
+	    	PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Categorie WHERE categorie = ?");
+	    	preparedStatement.setString(1, categorieName);
 
-	    	 ResultSet resultSet = preparedStatement.executeQuery();
+	    	ResultSet resultSet = preparedStatement.executeQuery();
 
-	         while (resultSet.next()) {
-	        	 // Initialise The Object
-	        	 categorie = new Categorie();
+	        while (resultSet.next()) {
+	        	// Initialise The Object
+	        	categorie = new Categorie();
 	        	 
-	        	 categorie.setId(resultSet.getInt("id"));
-	        	 categorie.setCategorie(categorieName);
-	         }
-	     } catch (SQLException e) {
+	        	categorie.setId(resultSet.getInt("id"));
+	        	categorie.setCategorie(categorieName);
+	        }
+	    } catch (SQLException e) {
 	    	 e.printStackTrace();
 	     }
 		
@@ -88,7 +88,7 @@ public class UserDAO {
 		
 		int id, quantityDispo;
 		Categorie categorie;
-		String nom;
+		String titre, imageName;
 		double prix;
 
 	     try (Connection connection = DataBaseConnection.connectToDB();) {
@@ -98,9 +98,10 @@ public class UserDAO {
 
 	         while (resultSet.next()) {
 	        	 id = resultSet.getInt("id");
-	        	 quantityDispo = resultSet.getInt("quantiteDispo");
-	        	 nom = resultSet.getString("titre");
+	        	 titre = resultSet.getString("titre");
 	        	 prix = resultSet.getDouble("prix");
+	        	 quantityDispo = resultSet.getInt("quantiteDispo");
+	        	 imageName = resultSet.getString("image");
 	        	 int idCategorie = resultSet.getInt("idCategorie");
 	        	 
 	        	 Optional<Categorie> optionalCategorie = getCategorieById(idCategorie);
@@ -108,7 +109,7 @@ public class UserDAO {
 	        	 System.out.println("Beffore: " + id);
 	        	 if (optionalCategorie.isPresent()) {
 		        	categorie = optionalCategorie.get();
-		        	allProducts.add(new Produit(id, categorie, nom, quantityDispo, prix));
+		        	allProducts.add(new Produit(id, titre, prix, quantityDispo, imageName, categorie));
 		        	System.out.println("Added: " + id);
 	        	 }
 	         }
@@ -125,7 +126,7 @@ public class UserDAO {
 		int id, quantityDispo;
 		Categorie categorie;
 		Optional<Categorie> optionalCategorie = getCategorieByName(categorieName); 
-		String nom;
+		String titre, imageName;
 		double prix;
 
 		if (optionalCategorie.isPresent()) {
@@ -140,10 +141,11 @@ public class UserDAO {
 	         while (resultSet.next()) {
 	        	 id = resultSet.getInt("id");
 	        	 quantityDispo = resultSet.getInt("quantityDispo");
-	        	 nom = resultSet.getString("nom");
+	        	 titre = resultSet.getString("titre");
 	        	 prix = resultSet.getDouble("prix");
+	        	 imageName = resultSet.getString("imageName");
 	        	 
-	        	 allProducts.add(new Produit(id, categorie, nom, quantityDispo, prix));
+	        	 allProducts.add(new Produit(id, titre, prix, quantityDispo, imageName, categorie));
 	         }
 	     } catch (SQLException e) {
 	    	 e.printStackTrace();
@@ -159,27 +161,28 @@ public class UserDAO {
 		
 		int id, quantityDispo;
 		Categorie categorie;
-		String nom;
+		String titre, imageName;
 		double prix;
 
 		try (Connection connection = DataBaseConnection.connectToDB();) {
-			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Produit WHERE nom like ?");
-	    	preparedStatement.setString(1, "`%" + productName + "%`");
+			PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Produit WHERE titre LIKE ?");
+	    	preparedStatement.setString(1, "%" + productName + "%");
 
 	    	ResultSet resultSet = preparedStatement.executeQuery();
 
 	        while (resultSet.next()) {
 	        	id = resultSet.getInt("id");
-	        	quantityDispo = resultSet.getInt("quantityDispo");
-	        	nom = resultSet.getString("nom");
+	        	quantityDispo = resultSet.getInt("quantiteDispo");
+	        	titre = resultSet.getString("titre");
 	        	prix = resultSet.getDouble("prix");
+	        	imageName = resultSet.getString("image");
 	        	int idCategorie = resultSet.getInt("idCategorie");
 	        	
 	        	Optional<Categorie> optionalCategorie = getCategorieById(idCategorie);
 	        	 
 	        	if (optionalCategorie.isPresent()) {
 	        		categorie = optionalCategorie.get();
-	        		allProducts.add(new Produit(id, categorie, nom, quantityDispo, prix));
+	        		allProducts.add(new Produit(id, titre, prix, quantityDispo, imageName, categorie));
 	        	}
 	        }
 	     } catch (SQLException e) {

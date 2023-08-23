@@ -7,13 +7,15 @@ public class Commande {
 	
 	public Commande() {}
 	
-	public Commande(int dateCommande) {
+	public Commande(int dateCommande, User user) {
 		this.dateCommande = dateCommande;
+		this.user= user;
 	}
 	
-	public Commande(int id, int dateCommande) {
+	public Commande(int id, int dateCommande, User user) {
 		this.id = id;
 		this.dateCommande = dateCommande;
+		this.user= user;
 	}
 
 	public int getId() {
