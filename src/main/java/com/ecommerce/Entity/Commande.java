@@ -1,9 +1,13 @@
 package com.ecommerce.Entity;
 
+import java.util.*;
+
 public class Commande {
 	private int id;
 	private int dateCommande;
 	private User user;
+	private List<LigneCommande> listeLigneCommande;
+	//list de ligne de commande ?
 	
 	public Commande() {}
 	
